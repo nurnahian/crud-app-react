@@ -1,32 +1,38 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import BASE_URL from "./BaseUrl";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import BASE_URL from "./ApiUrl";
+import useFetchData from './ApiDataFetch'
+import axios from "axios";
 
 function GetData() {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
+
+    
+
+    const { data, loading, error } = useFetchData(`${BASE_URL}/crud`);
     const [editingIndex, setEditingIndex] = useState(null); // Track which row is being edited
+    const [EditData, setEditData] = useState([]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get(`${BASE_URL}/crud`);
-                setData(response.data);
-                setLoading(false);
-            } catch (error) {
-                console.error("Error fetching data:", error);
-                setLoading(false);
-            }
-        };
+    //const [loading, setLoading] = useState(true);
 
-        fetchData();
-    }, []);
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             const response = await axios.get(`${BASE_URL}/crud`);
+    //             setData(response.data);
+    //             setLoading(false);
+    //         } catch (error) {
+    //             console.error("Error fetching data:", error);
+    //             setLoading(false);
+    //         }
+    //     };
+
+    //     fetchData();
+    // }, []);
 
     const handleEdit = (index, field, value) => {
         const updatedData = [...data];
         updatedData[index][field] = value;
-        setData(updatedData);
+        setEditData(updatedData);
     };
 
     const toggleEditing = (index) => {
@@ -35,14 +41,11 @@ function GetData() {
 
     const saveChanges = async (index) => {
         try {
-            const response = await axios.put(
-                `${BASE_URL}/crud/${data[index].id}`,
-                data[index]
-            );
+            const response = await axios.put(`${BASE_URL}/crud/${data[index].id}`,EditData[index]);
             // Assuming the server returns the updated data, you can update the state
-            const updatedData = [...data];
-            updatedData[index] = response.data;
-            setData(updatedData);
+            // const updatedData = [...data];
+            // updatedData[index] = response.data;
+            // setData(updatedData);
             toggleEditing(null); // Exit edit mode
         } catch (error) {
             console.error("Error saving data:", error);

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { Toast } from "react-bootstrap";
-import BASE_URL from "./BaseUrl";
+import BASE_URL from "./ApiUrl";
 
 function Create() {
 
