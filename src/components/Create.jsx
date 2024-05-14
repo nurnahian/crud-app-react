@@ -6,33 +6,47 @@ import BASE_URL from "./ApiUrl";
 
 function Create() {
 
-    const [name, setName] = useState('');
-    const [age, setAge] = useState('');
-    const [email, setEmail] = useState('');
+    // const [name, setName] = useState('');
+    // const [age, setAge] = useState('');
+    // const [email, setEmail] = useState('');
+
+    const [formData,setFormData] = useState({
+        name:'',
+        age:'',
+        email:'',
+    });
+
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const [showToast, setShowToast] = useState(false);
     
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value
+        });
+    };
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const {name,age,email} = formData;
+
         if (!name || !age || !email) {
             setErrorMessage("All fields are required.");
             setShowToast(true);
             return;
         }
         try {
-            const response = await axios.post(`${BASE_URL}/crud`, {
-                name: name,
-                age: age,
-                email: email
-            });
+            const response = await axios.post(`${BASE_URL}/crud`, formData);
             console.log("Data sent successfully:", response.data);
             setSuccessMessage("Data saved successfully.");
             setShowToast(true);
             // Clear form fields after successful submission
-            setName('');
-            setAge('');
-            setEmail('');
+            setFormData({
+                name:'',
+                age:'',
+                email:'',
+            });
             setErrorMessage('');
         } catch (error) {
             console.error("Error sending data:", error);
@@ -49,15 +63,15 @@ function Create() {
                     <form onSubmit={handleSubmit}>
                         <div className="form-group">
                             <label htmlFor="Name">Enter Name: </label>
-                            <input type="text" placeholder="Name" className="form-control" value={name} onChange={(e) => setName(e.target.value)} required />
+                            <input type="text" placeholder="Name" className="form-control" name="name" value={formData.name} onChange={handleChange} required />
                         </div>
                         <div className="form-group">
                             <label htmlFor="Age">Enter Age: </label>
-                            <input type="text" placeholder="Age" className="form-control" value={age} onChange={(e) => setAge(e.target.value)} required />
+                            <input type="text" placeholder="Age" className="form-control" name="age" value={formData.age} onChange={handleChange} required />
                         </div>
                         <div className="form-group">
                             <label htmlFor="Email">Enter Email: </label>
-                            <input type="text" placeholder="Email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)}required  />
+                            <input type="text" placeholder="Email" className="form-control" name="email" value={formData.email} onChange={handleChange}required  />
                         </div>
                         <br />
                         <div className="d-grid">
